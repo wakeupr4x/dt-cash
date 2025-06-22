@@ -1,0 +1,650 @@
+import React, { useState, useEffect, useRef } from 'react'; // Added useRef
+// Corrected imports for Lucide React icons
+import { ChevronDown, Globe, Search, ArrowRight, TrendingUp, TrendingDown, DollarSign, Wallet, BarChart2, Briefcase, BookOpen, MessageCircle, Twitter, Facebook, Linkedin, Send, Youtube, Rss, X } from 'lucide-react'; 
+
+// Mock Data for demonstration (defined at the top)
+const mockMarketData = [
+  { id: '1', name: 'BTC/USDT', price: '68,543.21', change24h: '+1.25%', volume: '1.2B', chart: 'up' },
+  { id: '2', name: 'ETH/USDT', price: '3,850.50', change24h: '-0.80%', volume: '800M', chart: 'down' },
+  { id: '3', 'name': 'BNB/USDT', 'price': '605.15', 'change24h': '+0.55%', 'volume': '250M', 'chart': 'up' },
+  { id: '4', name: 'SOL/USDT', price: '165.70', change24h: '+2.10%', volume: '180M', 'chart': 'up' },
+  { id: '5', name: 'XRP/US_D_T', price: '0.5230', change24h: '-1.20%', volume: '150M', chart: 'down' },
+  { id: '6', name: 'DOGE/USDT', price: '0.1450', change24h: '+3.00%', volume: '100M', chart: 'up' },
+];
+
+const mockOrderBook = [
+    { price: '68545.00', amount: '0.123', total: '8435.00', type: 'buy' },
+    { price: '68540.00', amount: '0.250', total: '17135.00', type: 'buy' },
+    { price: '68538.50', amount: '0.050', total: '3426.92', type: 'buy' },
+    { price: '68535.00', amount: '0.500', total: '34267.50', type: 'buy' },
+    { price: '68530.00', amount: '0.080', total: '5482.40', type: 'buy' },
+    { price: '68550.00', amount: '0.100', total: '6855.00', type: 'sell' },
+    { price: '68555.00', amount: '0.300', total: '20566.50', type: 'sell' },
+    { price: '68560.00', amount: '0.070', total: '4799.20', type: 'sell' },
+    { price: '68565.00', amount: '0.150', total: '10284.75', type: 'sell' },
+    { price: '68570.00', amount: '0.200', total: '13714.00', type: 'sell' },
+];
+
+const mockRecentTrades = [
+    { time: '10:30:01', price: '68543.21', amount: '0.01', type: 'buy' },
+    { time: '10:30:00', price: '68542.90', amount: '0.05', type: 'sell' },
+    { time: '10:29:59', price: '68543.50', amount: '0.02', type: 'buy' },
+    { time: '10:29:58', price: '68543.00', amount: '0.10', type: 'buy' },
+    { time: '10:29:57', price: '68542.80', amount: '0.03', type: 'sell' },
+];
+
+
+// --- Component Definitions (Ensuring proper order) ---
+// All components are defined before App
+
+const AuthModal = ({ isOpen, onClose }) => {
+    const [isLogin, setIsLogin] = useState(true); // true for login, false for signup
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div className="bg-[#1A1B23] p-8 rounded-lg shadow-2xl border border-[#30333A] max-w-md w-full relative">
+                <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white">
+                    <X size={24} />
+                </button>
+                <h2 className="text-3xl font-bold text-center text-[#F0B90B] mb-6 font-quantex">
+                    {isLogin ? 'Login' : 'Sign Up'}
+                </h2>
+                <form className="space-y-4">
+                    {!isLogin && (
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                                placeholder="Your Name"
+                            />
+                        </div>
+                    )}
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                            placeholder="your@example.com"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                            placeholder="********"
+                            />
+                        </div>
+                    {!isLogin && (
+                        <div>
+                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-400 mb-1">Confirm Password</label>
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                                placeholder="********"
+                            />
+                        </div>
+                    )}
+                    <button 
+                        type="submit" 
+                        className="w-full bg-[#F0B90B] text-black py-3 rounded-md font-semibold hover:bg-yellow-400 transition-colors duration-200 font-quantex"
+                    >
+                        {isLogin ? 'Login' : 'Sign Up'}
+                    </button>
+                </form>
+                <p className="text-center text-gray-400 text-sm mt-4">
+                    {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
+                    <button onClick={() => setIsLogin(!isLogin)} className="text-[#F0B90B] hover:underline">
+                        {isLogin ? 'Sign Up' : 'Login'}
+                    </button>
+                </p>
+            </div>
+        </div>
+    );
+};
+
+
+const Header = ({ onLoginClick }) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return (
+    <header className={`bg-[#1A1B23] bg-opacity-90 text-gray-300 py-4 px-6 md:px-10 border-b border-[#30333A] flex flex-wrap items-center justify-between fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'shadow-xl border-b-0' : ''}`}>
+      {/* Logo */}
+      <div className="flex items-center space-x-6">
+        <a href="https://youtu.be/e_04ZrNroTo?si=uQDNcQwvRiXAW_zM" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform duration-200">
+          <div className="text-2xl font-bold text-[#F0B90B] tracking-wider font-quantex">
+            DT-CASH
+          </div>
+        </a>
+        {/* Primary Navigation */}
+        <nav className="hidden lg:flex items-center space-x-6 text-sm">
+          <a href="#" className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200 flex items-center">
+            Markets <ChevronDown size={16} className="ml-1" />
+          </a>
+          <a href="#" className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200 flex items-center">
+            Trade <ChevronDown size={16} className="ml-1" />
+          </a>
+        </nav>
+      </div>
+
+      {/* Right-side actions */}
+      <div className="flex items-center space-x-4">
+        <div className="hidden md:flex items-center space-x-4 text-sm">
+          <a href="#" className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">Download</a>
+          <a href="#" className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">Log In</a>
+          <button 
+            onClick={onLoginClick}
+            className="bg-[#F0B90B] text-black px-4 py-2 rounded-md font-medium font-quantex hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200"
+          >
+            Login to Sell
+          </button>
+        </div>
+        <div className="flex items-center space-x-2 text-sm ml-4">
+          <button className="flex items-center hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">
+            <Globe size={18} className="mr-1" /> EN <ChevronDown size={16} className="ml-1" />
+          </button>
+          <button className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">USD</button>
+        </div>
+        {/* Mobile menu icon (hidden on large screens) */}
+        <button className="lg:hidden text-gray-300 hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+  );
+};
+
+const HeroSection = ({ onLoginClick }) => {
+  return (
+    <section className="bg-transparent text-white py-20 px-6 md:px-10 text-center relative overflow-hidden mt-16">
+      {/* Background circles (simple visual effect) - Keeping for visual interest as content overlay will handle image */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="absolute w-96 h-96 bg-gradient-to-r from-blue-500 to-green-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob top-10 left-1/4"></div>
+        <div className="absolute w-96 h-96 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
+        <div className="absolute w-96 h-96 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 bottom-1/4 left-1/3"></div>
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto rounded-lg p-8"> 
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight font-quantex">
+          Trade Cryptocurrencies in Minutes
+        </h1>
+        <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto font-quantex">
+          Buy, sell, and trade cryptocurrencies with confidence on the world's leading crypto exchange.
+        </p>
+        <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+          <button
+            onClick={onLoginClick}
+            className="bg-[#F0B90B] text-black px-8 py-3 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 shadow-lg flex items-center justify-center font-quantex" 
+          >
+            Login to Sell <ArrowRight size={20} className="ml-2" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const TradeSection = () => {
+    return (
+        <section className="bg-transparent text-white py-16 px-6 md:px-10">
+            <div className="max-w-7xl mx-auto p-8 rounded-lg shadow-md border border-[#30333A]">
+                <h2 className="text-3xl font-bold mb-8 text-center md:text-left font-quantex">Trade with Confidence</h2>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-3 bg-[#1A1B23] rounded-lg p-6 shadow-md border border-[#30333A]">
+                        <h3 className="text-xl font-semibold mb-4 font-quantex">Place Order</h3>
+                        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-4">
+                            <button className="flex-1 bg-green-600 text-white py-2 rounded-md font-medium hover:bg-[#F0B90B] hover:text-black hover:scale-105 hover:shadow-lg transition-all duration-200">Buy</button>
+                            <button className="flex-1 bg-red-600 text-white py-2 rounded-md font-medium hover:bg-[#F0B90B] hover:text-black hover:scale-105 hover:shadow-lg transition-all duration-200">Sell</button>
+                        </div>
+                        <div className="mb-4">
+                            <label htmlFor="price" className="block text-sm font-medium text-gray-400 mb-1">Price (USDT)</label>
+                            <input type="number" id="price" placeholder="68543.21" className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" />
+                        </div>
+                        <div className="mb-6">
+                            <label htmlFor="amount" className="block text-sm font-medium text-gray-400 mb-1">Amount (BTC)</label>
+                            <input type="number" id="amount" placeholder="0.01" className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" />
+                        </div>
+                        <button className="w-full bg-[#F0B90B] text-black py-3 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 font-quantex">
+                            Buy BTC
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+const CryptoExplainer = () => {
+    const [term, setTerm] = useState('');
+    const [explanation, setExplanation] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const handleExplain = async () => {
+        if (!term.trim()) {
+            setError('Please enter a term to explain.');
+            setExplanation('');
+            return;
+        }
+
+        setLoading(true);
+        setExplanation('');
+        setError('');
+
+        try {
+            let chatHistory = [];
+            const prompt = `Explain the cryptocurrency term or concept "${term}" in a simple, concise, and easy-to-understand manner for a beginner. Focus on what it is and its primary function/purpose in the crypto space. Keep the explanation to around 100-150 words.`;
+            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                setExplanation(result.candidates[0].content.parts[0].text);
+            } else {
+                setError('Failed to get explanation. Please try again.');
+                console.error("Gemini API response structure unexpected:", result);
+            }
+        } catch (err) {
+            setError('An error occurred while fetching the explanation. Please try again later.');
+            console.error("Error calling Gemini API:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <section className="bg-transparent text-white py-16 px-6 md:px-10">
+            <div className="max-w-4xl mx-auto p-8 rounded-lg shadow-md border border-[#30333A]">
+                <h2 className="text-3xl font-bold mb-6 text-center text-[#F0B90B] font-quantex">Crypto Explainer ✨</h2>
+                <p className="text-gray-300 mb-6 text-center">Enter a cryptocurrency term (e.g., "Blockchain", "DeFi", "Halving") and get a simple explanation.</p>
+                
+                <div className="flex flex-col md:flex-row gap-4 mb-6">
+                    <input
+                        type="text"
+                        value={term}
+                        onChange={(e) => setTerm(e.target.value)}
+                        placeholder="e.g., Blockchain, DeFi, Halving"
+                        className="flex-grow bg-gray-800 border border-gray-700 rounded-md py-3 px-4 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]"
+                    />
+                    <button
+                        onClick={handleExplain}
+                        className="bg-[#F0B90B] text-black px-6 py-3 rounded-md font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 flex items-center justify-center font-quantex" 
+                        disabled={loading}
+                    >
+                        {loading ? 'Explaining...' : 'Explain ✨'}
+                    </button>
+                </div>
+
+                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+                {explanation && (
+                    <div className="bg-gray-900 p-6 rounded-md border border-gray-700">
+                        <h3 className="text-xl font-semibold mb-3 text-gray-200 font-quantex">Explanation:</h3>
+                        <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">{explanation}</p>
+                    </div>
+                )}
+            </div>
+        </section>
+    );
+};
+
+const MarketOverview = () => { 
+  return (
+    <section className="bg-transparent text-white py-16 px-6 md:px-10">
+      <div className="max-w-7xl mx-auto p-8 rounded-lg shadow-md border border-[#30333A]">
+        <h2 className="text-3xl font-bold mb-8 text-center md:text-left font-quantex">Markets Overview</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-[#30333A]">
+            <thead className="bg-[#1A1B23]">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider rounded-tl-md">
+                  Name
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  Last Price
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                  24h Change
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider rounded-tr-md">
+                  24h Volume
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-[#0B0E11] divide-y divide-[#30333A]">
+              {mockMarketData.map((coin) => (
+                <tr key={coin.id} className="hover:bg-[#1A1B23] transition-colors duration-200">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium">{coin.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{coin.price}</td>
+                  <td className={`px-6 py-4 whitespace-nowrap text-sm ${coin.chart === 'up' ? 'text-green-500' : 'text-red-500'}`}>
+                    <div className="flex items-center">
+                      {coin.chart === 'up' ? <TrendingUp size={16} className="mr-1" /> : <TrendingDown size={16} className="mr-1" />}
+                      {coin.change24h}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">{coin.volume}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="text-center mt-8">
+            <a 
+                href="https://www.tradingview.com/markets/#stocks" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-block bg-gray-700 text-gray-200 px-6 py-2 rounded-md hover:bg-[#F0B90B] hover:text-black hover:scale-105 hover:shadow-lg transition-all duration-200 font-quantex" 
+            >
+                View More Markets
+            </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer className="bg-[#1A1B23] text-gray-400 py-12 px-6 md:px-10 border-t border-[#30333A]">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        {/* Column 1: About Us */}
+        <div>
+          <h4 className="text-lg font-semibold text-white mb-4 font-quantex">About Us</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">About DT-CASH</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Careers</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Announcements</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">News</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Legal</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Privacy</a></li>
+          </ul>
+        </div>
+
+        {/* Column 2: Products */}
+        <div>
+          <h4 className="text-lg font-semibold text-white mb-4 font-quantex">Products</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Exchange</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Academy</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Broker</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Charity</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Labs</a></li>
+          </ul>
+        </div>
+
+        {/* Column 3: Service */}
+        <div>
+          <h4 className="text-lg font-semibold text-white mb-4 font-quantex">Service</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Downloads</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Desktop Application</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Buy Crypto</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Referral</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">API</a></li>
+          </ul>
+        </div>
+
+        {/* Column 4: Support */}
+        <div>
+          <h4 className="text-lg font-semibold text-white mb-4 font-quantex">Support</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Feedback</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Support Center</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Submit a request</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Fees</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Trading Rules</a></li>
+          </ul>
+        </div>
+
+        {/* Column 5: Learn & Community */}
+        <div>
+          <h4 className="text-lg font-semibold text-white mb-4 font-quantex">Learn</h4>
+          <ul className="space-y-2 text-sm mb-6">
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Learn & Earn</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Browse Crypto Prices</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Bitcoin Price</a></li>
+            <li><a href="#" className="hover:text-[#F0B90B] transition-colors duration-200 hover:scale-105">Ethereum Price</a></li>
+          </ul>
+          <h4 className="text-lg font-semibold text-white mb-4 font-quantex">Community</h4>
+          <div className="flex space-x-4">
+            <a href="#" aria-label="Twitter" className="text-gray-400 hover:text-[#F0B90B] hover:scale-110 transition-all duration-200"><Twitter size={20} /></a>
+            <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-[#F0B90B] hover:scale-110 transition-all duration-200"><Facebook size={20} /></a>
+            <a href="#" aria-label="Linkedin" className="text-gray-400 hover:text-[#F0B90B] hover:scale-110 transition-all duration-200"><Linkedin size={20} /></a>
+            <a href="#" aria-label="Telegram" className="text-gray-400 hover:text-[#F0B90B] hover:scale-110 transition-all duration-200"><Send size={20} /></a>
+            <a href="#" aria-label="Youtube" className="text-gray-400 hover:text-[#F0B90B] hover:scale-110 transition-all duration-200"><Youtube size={20} /></a>
+            <a href="#" aria-label="Reddit" className="text-gray-400 hover:text-[#F0B90B] hover:scale-110 transition-all duration-200"><Rss size={20} /></a>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-12 pt-8 border-t border-[#30333A] text-center text-sm">
+        <p className="text-gray-500">&copy; 2023 DT-CASH. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+};
+
+
+// New CursorSparkle component
+const CursorSparkle = () => {
+  const sparkleContainerRef = useRef(null);
+  const sparkleCount = useRef(0);
+
+  useEffect(() => {
+    const createSparkle = (x, y) => {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'absolute rounded-full pointer-events-none opacity-0';
+      sparkle.style.left = `${x}px`;
+      sparkle.style.top = `${y}px`;
+      
+      const size = Math.random() * 8 + 4; // Random size between 4 and 12
+      sparkle.style.width = `${size}px`;
+      sparkle.style.height = `${size}px`;
+      
+      // Shades of yellow
+      const yellowShades = ['#F0B90B', '#FFD700', '#FFA500', '#FFC800']; // Binance Yellow, Gold, Orange, Brighter Yellow
+      sparkle.style.backgroundColor = yellowShades[Math.floor(Math.random() * yellowShades.length)];
+
+      // Apply initial transform for a small "burst"
+      const translateX = (Math.random() - 0.5) * 20; // -10 to 10px
+      const translateY = (Math.random() - 0.5) * 20; // -10 to 10px
+      sparkle.style.transform = `translate(-50%, -50%) translate(${translateX}px, ${translateY}px) scale(0)`;
+      
+      // Added motion blur effect using filter: blur()
+      sparkle.style.transition = `transform 0.8s ease-out, opacity 0.8s ease-out, filter 0.8s ease-out`; // Add filter to transition
+      sparkle.style.filter = `blur(0px)`; // Initial blur
+      sparkle.style.willChange = 'transform, opacity, filter'; // Optimize for animation
+      
+      sparkle.style.zIndex = '9999'; // Ensure it's on top
+
+      if (sparkleContainerRef.current) {
+        sparkleContainerRef.current.appendChild(sparkle);
+      }
+
+      // Trigger animation
+      requestAnimationFrame(() => {
+        sparkle.style.opacity = '1';
+        sparkle.style.transform = `translate(-50%, -50%) translate(0, 0) scale(1)`;
+        sparkle.style.filter = `blur(1px)`; // Apply blur as it starts
+      });
+
+      // Fade out and remove after animation, with increasing blur
+      setTimeout(() => {
+        sparkle.style.opacity = '0';
+        sparkle.style.transform = `translate(-50%, -50%) scale(0.5)`; // Shrink slightly
+        sparkle.style.filter = `blur(3px)`; // Increase blur as it fades
+        setTimeout(() => {
+          if (sparkle.parentNode) {
+            sparkle.parentNode.removeChild(sparkle);
+          }
+        }, 800); // Match transition duration
+      }, 300); // Time before fading starts
+    };
+
+    const handleMouseMove = (e) => {
+      // Only create a sparkle every few frames to control density
+      sparkleCount.current = (sparkleCount.current + 1) % 3; // Create sparkle every 3rd mouse move event
+      if (sparkleCount.current === 0) {
+        createSparkle(e.clientX, e.clientY);
+      }
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  return <div ref={sparkleContainerRef} className="fixed inset-0 pointer-events-none z-[9999]"></div>;
+};
+
+
+const App = () => {
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
+  const openAuthModal = () => setIsAuthModalOpen(true);
+  const closeAuthModal = () => setIsAuthModalOpen(false);
+
+  return (
+    <div className="min-h-screen bg-[#0B0E11] flex flex-col font-inter">
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap'); /* Importing Orbitron */
+
+
+          /* Set the background image for the whole body */
+          body {
+            background-image: url('uploaded:image_89c228.jpg-10a63339-fc85-4c29-b03d-035124e46d1f'); 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: scroll; /* Image scrolls with content */
+            background-repeat: no-repeat;
+          }
+
+          /* Custom scrollbar for trade sections */
+          .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+          }
+
+          .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1A1B23;
+            border-radius: 10px;
+          }
+
+          .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #30333A;
+            border-radius: 10px;
+          }
+
+          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4A4E57;
+          }
+
+          /* Keyframe animations for hero section blobs */
+          @keyframes blob {
+            0% {
+              transform: translate(0px, 0px) scale(1);
+            }
+            33% {
+              transform: translate(30px, -50px) scale(1.1);
+            }
+            66% {
+              transform: translate(-20px, 20px) scale(0.9);
+            }
+            100% {
+              transform: translate(0px, 0px) scale(1);
+            }
+          }
+
+          .animate-blob {
+            animation: blob 7s infinite;
+          }
+
+          .animation-delay-2000 {
+            animation-delay: 2s;
+          }
+          .animation-delay-4000 {
+            animation-delay: 4s;
+          }
+
+          /* Ensure html, body, #root take full height for proper layout */
+          html, body, #root {
+            height: 100%;
+          }
+
+          /* Apply Inter font as default */
+          .font-inter {
+            font-family: "Inter", sans-serif;
+          }
+
+          /* New font for headings and big text */
+          .font-quantex { /* Using 'font-quantex' class to apply Orbitron */
+            font-family: "Orbitron", sans-serif;
+          }
+
+          /* General hover effects for elements that were glassmorphed or regular buttons/links */
+          /* These classes are applied directly in JSX where needed */
+          .hover\:bg-\[\#F0B90B\]:hover { background-color: #F0B90B; }
+          .hover\:text-black:hover { color: #000; }
+          .hover\:scale-105:hover { transform: scale(1.05); }
+          .hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+          .transition-all { transition: all 0.3s ease; } /* Ensures smooth transitions */
+
+        `}
+      </style>
+      <Header onLoginClick={openAuthModal} />
+      <main className="flex-grow">
+        <HeroSection onLoginClick={openAuthModal} />
+        <TradeSection />
+        <CryptoExplainer />
+        <MarketOverview />
+      </main>
+      <Footer />
+      <AuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
+      <CursorSparkle /> {/* Added the CursorSparkle component */}
+    </div>
+  );
+};
+
+export default App;
