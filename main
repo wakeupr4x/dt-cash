@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'; // Added useRef
-// Corrected imports for Lucide React icons
-import { ChevronDown, Globe, Search, ArrowRight, TrendingUp, TrendingDown, DollarSign, Wallet, BarChart2, Briefcase, BookOpen, MessageCircle, Twitter, Facebook, Linkedin, Send, Youtube, Rss, X } from 'lucide-react'; 
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronDown, Globe, Search, ArrowRight, TrendingUp, TrendingDown, DollarSign, Wallet, BarChart2, Briefcase, BookOpen, MessageCircle, Twitter, Facebook, Linkedin, Send, Youtube, Rss, X } from 'lucide-react';
 
 // Mock Data for demonstration (defined at the top)
 const mockMarketData = [
@@ -55,45 +54,45 @@ const AuthModal = ({ isOpen, onClose }) => {
                     {!isLogin && (
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-1">Name</label>
-                            <input 
-                                type="text" 
-                                id="name" 
-                                className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                            <input
+                                type="text"
+                                id="name"
+                                className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]"
                                 placeholder="Your Name"
                             />
                         </div>
                     )}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                        <input
+                            type="email"
+                            id="email"
+                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]"
                             placeholder="your@example.com"
                         />
                     </div>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-1">Password</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                        <input
+                            type="password"
+                            id="password"
+                            className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]"
                             placeholder="********"
                             />
                         </div>
                     {!isLogin && (
                         <div>
                             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-400 mb-1">Confirm Password</label>
-                            <input 
-                                type="password" 
-                                id="confirmPassword" 
-                                className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]" 
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                className="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white focus:outline-none focus:ring-1 focus:ring-[#F0B90B]"
                                 placeholder="********"
                             />
                         </div>
                     )}
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="w-full bg-[#F0B90B] text-black py-3 rounded-md font-semibold hover:bg-yellow-400 transition-colors duration-200 font-quantex"
                     >
                         {isLogin ? 'Login' : 'Sign Up'}
@@ -154,7 +153,7 @@ const Header = ({ onLoginClick }) => {
         <div className="hidden md:flex items-center space-x-4 text-sm">
           <a href="#" className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">Download</a>
           <a href="#" className="hover:text-[#F0B90B] hover:scale-105 transition-all duration-200">Log In</a>
-          <button 
+          <button
             onClick={onLoginClick}
             className="bg-[#F0B90B] text-black px-4 py-2 rounded-md font-medium font-quantex hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200"
           >
@@ -188,7 +187,7 @@ const HeroSection = ({ onLoginClick }) => {
         <div className="absolute w-96 h-96 bg-gradient-to-r from-yellow-500 to-red-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 bottom-1/4 left-1/3"></div>
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto rounded-lg p-8"> 
+      <div className="relative z-10 max-w-4xl mx-auto rounded-lg p-8">
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight font-quantex">
           Trade Cryptocurrencies in Minutes
         </h1>
@@ -198,7 +197,7 @@ const HeroSection = ({ onLoginClick }) => {
         <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
           <button
             onClick={onLoginClick}
-            className="bg-[#F0B90B] text-black px-8 py-3 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 shadow-lg flex items-center justify-center font-quantex" 
+            className="bg-[#F0B90B] text-black px-8 py-3 rounded-md text-lg font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 shadow-lg flex items-center justify-center font-quantex"
           >
             Login to Sell <ArrowRight size={20} className="ml-2" />
           </button>
@@ -244,7 +243,25 @@ const CryptoExplainer = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleExplain = async () => {
+    const getLocalExplanation = (inputTerm) => {
+        const lowerCaseTerm = inputTerm.toLowerCase();
+        switch (lowerCaseTerm) {
+            case 'blockchain':
+                return "Blockchain is a decentralized, distributed ledger technology that records transactions across many computers so that the record cannot be altered retroactively without the alteration of all subsequent blocks and the consensus of the network.";
+            case 'defi':
+                return "DeFi, or Decentralized Finance, refers to a financial system built on blockchain technology that aims to remove intermediaries like banks. It offers services like lending, borrowing, and trading using smart contracts, providing open and permissionless access to financial products.";
+            case 'halving':
+                return "Halving, specific to Bitcoin, is an event where the reward for mining new blocks is cut in half. This happens approximately every four years and reduces the rate at which new bitcoins are created, making Bitcoin scarcer and potentially impacting its price due to supply reduction.";
+            case 'bitcoin':
+                return "Bitcoin (BTC) is a decentralized digital currency, without a central bank or single administrator, that can be sent from user to user on the peer-to-peer bitcoin network without the need for intermediaries. Transactions are verified by network nodes through cryptography and recorded in a public distributed ledger called a blockchain.";
+            case 'ethereum':
+                return "Ethereum (ETH) is a decentralized, open-source blockchain with smart contract functionality. Ether (ETH) is the native cryptocurrency of the Ethereum platform. It is the second-largest cryptocurrency by market capitalization after Bitcoin. Ethereum is a platform for many other cryptocurrencies, decentralized applications, and NFTs.";
+            default:
+                return `We don't have a specific explanation for "${inputTerm}" at the moment. Please try a common crypto term like 'Blockchain', 'DeFi', or 'Halving'.`;
+        }
+    };
+
+    const handleExplain = () => {
         if (!term.trim()) {
             setError('Please enter a term to explain.');
             setExplanation('');
@@ -255,36 +272,12 @@ const CryptoExplainer = () => {
         setExplanation('');
         setError('');
 
-        try {
-            let chatHistory = [];
-            const prompt = `Explain the cryptocurrency term or concept "${term}" in a simple, concise, and easy-to-understand manner for a beginner. Focus on what it is and its primary function/purpose in the crypto space. Keep the explanation to around 100-150 words.`;
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                setExplanation(result.candidates[0].content.parts[0].text);
-            } else {
-                setError('Failed to get explanation. Please try again.');
-                console.error("Gemini API response structure unexpected:", result);
-            }
-        } catch (err) {
-            setError('An error occurred while fetching the explanation. Please try again later.');
-            console.error("Error calling Gemini API:", err);
-        } finally {
+        // Simulate an asynchronous operation
+        setTimeout(() => {
+            const explanationText = getLocalExplanation(term);
+            setExplanation(explanationText);
             setLoading(false);
-        }
+        }, 500); // Simulate network delay
     };
 
     return (
@@ -292,7 +285,7 @@ const CryptoExplainer = () => {
             <div className="max-w-4xl mx-auto p-8 rounded-lg shadow-md border border-[#30333A]">
                 <h2 className="text-3xl font-bold mb-6 text-center text-[#F0B90B] font-quantex">Crypto Explainer ✨</h2>
                 <p className="text-gray-300 mb-6 text-center">Enter a cryptocurrency term (e.g., "Blockchain", "DeFi", "Halving") and get a simple explanation.</p>
-                
+
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
                     <input
                         type="text"
@@ -303,7 +296,7 @@ const CryptoExplainer = () => {
                     />
                     <button
                         onClick={handleExplain}
-                        className="bg-[#F0B90B] text-black px-6 py-3 rounded-md font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 flex items-center justify-center font-quantex" 
+                        className="bg-[#F0B90B] text-black px-6 py-3 rounded-md font-semibold hover:bg-yellow-400 hover:scale-105 hover:shadow-lg transition-all duration-200 flex items-center justify-center font-quantex"
                         disabled={loading}
                     >
                         {loading ? 'Explaining...' : 'Explain ✨'}
@@ -323,7 +316,7 @@ const CryptoExplainer = () => {
     );
 };
 
-const MarketOverview = () => { 
+const MarketOverview = () => {
   return (
     <section className="bg-transparent text-white py-16 px-6 md:px-10">
       <div className="max-w-7xl mx-auto p-8 rounded-lg shadow-md border border-[#30333A]">
@@ -368,11 +361,11 @@ const MarketOverview = () => {
           </table>
         </div>
         <div className="text-center mt-8">
-            <a 
-                href="https://www.tradingview.com/markets/#stocks" 
-                target="_blank" 
+            <a
+                href="https://www.tradingview.com/markets/#stocks"
+                target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-gray-700 text-gray-200 px-6 py-2 rounded-md hover:bg-[#F0B90B] hover:text-black hover:scale-105 hover:shadow-lg transition-all duration-200 font-quantex" 
+                className="inline-block bg-gray-700 text-gray-200 px-6 py-2 rounded-md hover:bg-[#F0B90B] hover:text-black hover:scale-105 hover:shadow-lg transition-all duration-200 font-quantex"
             >
                 View More Markets
             </a>
@@ -475,11 +468,11 @@ const CursorSparkle = () => {
       sparkle.className = 'absolute rounded-full pointer-events-none opacity-0';
       sparkle.style.left = `${x}px`;
       sparkle.style.top = `${y}px`;
-      
+
       const size = Math.random() * 8 + 4; // Random size between 4 and 12
       sparkle.style.width = `${size}px`;
       sparkle.style.height = `${size}px`;
-      
+
       // Shades of yellow
       const yellowShades = ['#F0B90B', '#FFD700', '#FFA500', '#FFC800']; // Binance Yellow, Gold, Orange, Brighter Yellow
       sparkle.style.backgroundColor = yellowShades[Math.floor(Math.random() * yellowShades.length)];
@@ -488,12 +481,12 @@ const CursorSparkle = () => {
       const translateX = (Math.random() - 0.5) * 20; // -10 to 10px
       const translateY = (Math.random() - 0.5) * 20; // -10 to 10px
       sparkle.style.transform = `translate(-50%, -50%) translate(${translateX}px, ${translateY}px) scale(0)`;
-      
+
       // Added motion blur effect using filter: blur()
       sparkle.style.transition = `transform 0.8s ease-out, opacity 0.8s ease-out, filter 0.8s ease-out`; // Add filter to transition
       sparkle.style.filter = `blur(0px)`; // Initial blur
       sparkle.style.willChange = 'transform, opacity, filter'; // Optimize for animation
-      
+
       sparkle.style.zIndex = '9999'; // Ensure it's on top
 
       if (sparkleContainerRef.current) {
@@ -555,9 +548,9 @@ const App = () => {
 
           /* Set the background image for the whole body */
           body {
-            background-image: url('uploaded:image_89c228.jpg-10a63339-fc85-4c29-b03d-035124e46d1f'); 
-            background-size: cover; 
-            background-position: center; 
+            background-image: url('https://i.imgur.com/89c228d.jpg');
+            background-size: cover;
+            background-position: center;
             background-attachment: scroll; /* Image scrolls with content */
             background-repeat: no-repeat;
           }
@@ -625,10 +618,10 @@ const App = () => {
 
           /* General hover effects for elements that were glassmorphed or regular buttons/links */
           /* These classes are applied directly in JSX where needed */
-          .hover\:bg-\[\#F0B90B\]:hover { background-color: #F0B90B; }
-          .hover\:text-black:hover { color: #000; }
-          .hover\:scale-105:hover { transform: scale(1.05); }
-          .hover\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+          .hover\\:bg-\\[\\#F0B90B\\]:hover { background-color: #F0B90B; }
+          .hover\\:text-black:hover { color: #000; }
+          .hover\\:scale-105:hover { transform: scale(1.05); }
+          .hover\\:shadow-lg:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
           .transition-all { transition: all 0.3s ease; } /* Ensures smooth transitions */
 
         `}
